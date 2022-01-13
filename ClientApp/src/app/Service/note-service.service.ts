@@ -28,8 +28,10 @@ export class NoteServiceService {
   }
 
   saveNote(note: any) {
-    return this._http.post(this.myAppUrl + "api/Note/", note)
-      .subscribe(data => console.log(data));
+    this._http.post(this.myAppUrl + "api/Note/", note)
+      .subscribe(data => {
+        console.log(data);
+      });
   }
 
   updateNote(id: number, note: any) {
@@ -49,22 +51,6 @@ export class NoteServiceService {
       .subscribe(data => console.log(data));
   }
 
-  authorExist(name: string){
-    let Exist: boolean = false;
-    if (name != ""){
-      for (let i = 0; Exist == false && i < this.authorsList.length ; i++) {
-        for (let value in this.authorsList[i]){
-          if(this.authorsList[i][value] == name){
-            Exist = true;
-          }
-        }
-      }
-      return Exist;
-    } else{
-      return "null";
-    }
-  }
-
   getAuthorById(id: number) {
     return this._http.get(this.myAppUrl + "api/Author" + id)
       .subscribe(data => console.log(data));
@@ -82,66 +68,10 @@ export class NoteServiceService {
     return this.authorsList;
   }
 
-  getAuthorsIdByName(name: string) {
-    this._http.get(this.myAppUrl + "api/Author")
-      .subscribe(data => {
-        let authorGetResults: any = data;
-        for (let obj of authorGetResults) {
-          if(obj["name"] == name)
-          {
-            console.warn("AuthorId Found by Name: "+ obj["authorId"]);
-            this.authorId = obj["authorId"];
-            return obj["authorId"];
-            break;
-          }
-        }
-      });
-  }
-
-  saveAuthor(author: any) {
-    let AuthorFormData: FormData = new FormData();
-    AuthorFormData.append('name', author);
-    this._http.post(this.myAppUrl + "api/Author", AuthorFormData)
-      .subscribe(id => {
-        console.warn("New Author id°: " + id);
-        this.authorId = Number(id);
-        return id;
-      });
-  }
-
-  updateAuthor(id: number, author: any) {
-    return this._http.put(this.myAppUrl + "api/Author" + id, author)
-      .subscribe(data => console.log(data));
-  }
-
-  deleteAuthor(id: number) {
-    return this._http.delete(this.myAppUrl + "api/Author" + id)
-      .subscribe(data => console.log(data));
-  }
-
-
-
-
   //Tag
   getTag() {
     return this._http.get(this.myAppUrl + "api/Tag")
       .subscribe(data => console.log(data));
-  }
-
-  tagExist(tag: string){
-    let Exist: boolean = false;
-    if (tag != ""){
-      for (let i = 0; Exist == false && i < this.tagsList.length ; i++) {
-        for (let value in this.tagsList[i]){
-          if(this.tagsList[i][value] == tag){
-            Exist = true;
-          }
-        }
-      }
-      return Exist;
-    } else {
-      return "null";
-    }
   }
 
   getTagById(id: number) {
@@ -161,22 +91,6 @@ export class NoteServiceService {
     return this.tagsList;
   }
 
-  getTagsIdByName(tag: string) {
-    this._http.get(this.myAppUrl + "api/Tag")
-      .subscribe(data => {
-        let tagGetResults: any = data;
-        for (let obj of tagGetResults) {
-          if(obj["name"] == tag)
-          {
-            console.warn("TagId Found by Name: " + obj["tagId"]);
-            this.tagId = obj["tagId"];
-            return obj["tagId"];
-            break;
-          }
-        }
-      });
-  }
-
   saveTag(tag: any) {
     let TagFormData: FormData = new FormData();
     TagFormData.append('name', tag);
@@ -186,16 +100,6 @@ export class NoteServiceService {
         this.tagId = Number(id);
         return id;
       });
-  }
-
-  updateTag(id: number, tag: any) {
-    return this._http.put(this.myAppUrl + "api/Tag" + id, tag)
-      .subscribe(data => console.log(data));
-  }
-
-  deleteTag(id: number) {
-    return this._http.delete(this.myAppUrl + "api/Tag" + id)
-      .subscribe(data => console.log(data));
   }
 
 }

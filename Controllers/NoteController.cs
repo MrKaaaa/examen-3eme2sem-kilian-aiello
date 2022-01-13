@@ -72,7 +72,7 @@ public class NoteController : ControllerBase
         int? tagId;
 
         //Contrôle author
-        if (authorName == "")
+        if (authorName == null)
         {
             authorId = null;
         }
@@ -96,7 +96,7 @@ public class NoteController : ControllerBase
         }
 
         //Contrôle tag
-        if (tagName == "")
+        if (tagName == null)
         {
             tagId = null;
         }
@@ -129,8 +129,7 @@ public class NoteController : ControllerBase
 
         _context.Notes.Add(newNote);
         await _context.SaveChangesAsync();
-
-        return newNote;
+        return CreatedAtAction("GetNote", new {id = newNote.NoteId}, newNote);
     }
 
     // DELETE: api/Note/5
