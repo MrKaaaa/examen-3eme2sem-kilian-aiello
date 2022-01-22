@@ -1,0 +1,11 @@
+<div class="row-cols-md-auto">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">{{note.title}} <span *ngIf="authorExist" class="text-muted float-right">  {{note.author.name}}</span></h5>
+      <p class="card-text">{{note.description}}</p>
+    </div>
+    <div class="card-footer" *ngIf="tagExist">
+      <small class="text-muted float-left;">{{note.tag.name}}</small>
+    </div>
+  </div>
+</div>

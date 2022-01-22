@@ -1,0 +1,22 @@
+<button style="margin-bottom: 10px ; margin-right: 10px"
+        [routerLink]="['/note-gallery']"
+        class="btn btn-success">
+  < retour
+</button>
+
+<button style="margin-bottom: 10px ; margin-right: 10px"
+        [hidden]="this.gallery.notes.length == 0"
+        [routerLink]="['/note-gallery/delete']"
+        class="btn btn-danger">
+  Supprimer
+</button>
+
+<div class="card-columns">
+  <app-note-gallery-delete-result
+    *ngFor="let note_result of gallery.notes"
+    [note]="note_result"
+    (noteSelected)="deleteNote($event)">
+  </app-note-gallery-delete-result>
+</div>
+
+

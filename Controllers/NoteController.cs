@@ -3,6 +3,7 @@ using examen_kilian_aiello.Data;
 using examen_kilian_aiello.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace NotesPosting.Controllers;
 
@@ -21,41 +22,108 @@ public class NoteController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Note>>> GetNotes()
     {
-        return await _context.Notes.ToListAsync();
+
+        var notes = await _context.Notes
+            .Include(s => s.Tag)
+            .Include(s => s.Author)
+            .ToListAsync();
+
+        return notes;
     }
 
     // GET: api/Note/5
     [HttpGet("{id}")]
     public async Task<ActionResult<Note>> GetNote(int id)
     {
-        var note = await _context.Notes.FindAsync(id);
+        var notes =  _context.Notes
+            .Where(n => n.NoteId == id)
+            .Include(s => s.Tag)
+            .Include(s => s.Author).FirstOrDefault();
+        
+        if (notes == null)
+        {
+            return NotFound();
+        }
 
-        if (note == null) return NotFound();
-
-        return note;
+        return notes;
     }
 
     // PUT: api/Note/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutNote(int id, Note note)
+    public async Task<Note?> PutNote(int id,[FromBody] NoteRequest note)
     {
-        if (id != note.NoteId) return BadRequest();
+        Console.WriteLine("entrée dans PutNote");
+        
+        var title = note.title;
+        var description = note.description;
+        var authorName = note.authorName;
+        int? authorId;
+        var tagName = note.tagName;
+        int? tagId;
 
-        _context.Entry(note).State = EntityState.Modified;
-
-        try
+        //Contrôle author
+        if (authorName == null)
         {
-            await _context.SaveChangesAsync();
+            authorId = null;
         }
-        catch (DbUpdateConcurrencyException)
+        else
         {
-            if (!NoteExists(id))
-                return NotFound();
-            throw;
+            var author = await _context.Authors.FirstOrDefaultAsync(author => author.Name == authorName);
+            if (author == null)
+            {
+                var newAuthor = new Author
+                {
+                    Name = authorName
+                };
+                _context.Authors.Add(newAuthor);
+                await _context.SaveChangesAsync();
+                authorId = newAuthor.AuthorId;
+            }
+            else
+            {
+                authorId = author.AuthorId;
+            }
         }
 
-        return NoContent();
+        //Contrôle tag
+        if (tagName == null)
+        {
+            tagId = null;
+        }
+        else
+        {
+            var tag = await _context.Tags.FirstOrDefaultAsync(tag => tag.Name == tagName);
+            if (tag == null)
+            {
+                var newTag = new Tag
+                {
+                    Name = tagName
+                };
+                _context.Tags.Add(newTag);
+                await _context.SaveChangesAsync();
+                tagId = newTag.TagId;
+            }
+            else
+            {
+                tagId = tag.TagId;
+            }
+        }
+
+        var newNote = new Note
+        {
+            NoteId = id,
+            Title = title,
+            Description = description,
+            IdAuthor = authorId,
+            IdTag = tagId
+        };
+
+        _context.Entry(newNote).State = EntityState.Modified;
+
+        await _context.SaveChangesAsync();
+
+        return _context.Notes.FirstOrDefault(n => n.NoteId == id);
     }
 
     // POST: api/Note
@@ -144,8 +212,23 @@ public class NoteController : ControllerBase
 
         return NoContent();
     }
+    
+    // DELETE: api/Note/all
+    [HttpDelete("all")]
+    public async Task<IActionResult> DeleteAllNote()
+    {
+        var note = await _context.Notes.ToListAsync();
 
-    private bool NoteExists(int id)
+        _context.Notes.RemoveRange(note);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    
+    // NoteExist ?: api/Note/exist/5
+    [HttpGet("exist/{id:int}")]
+    public bool NoteExists(int id)
     {
         return _context.Notes.Any(e => e.NoteId == id);
     }

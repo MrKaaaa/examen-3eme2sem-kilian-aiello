@@ -1,0 +1,39 @@
+
+<div>
+  <h1>Modifier une note.</h1>
+  <form #form="ngForm" (ngSubmit)="onSubmit(dataForm)">
+    <div class="form-group">
+      <h3>Titre</h3>
+      <input type="text" [(ngModel)]="dataForm.title" [ngModelOptions]="{standalone: true}" ngModel required><br><br>
+
+      <h3>Description</h3>
+      <textarea id="description" rows="7" cols="40"
+                [(ngModel)]="dataForm.description" [ngModelOptions]="{standalone: true}" required></textarea>
+
+      <h3>Auteur</h3>
+      <input type="text" id="author" [(ngModel)]="dataForm.authorName" [ngModelOptions]="{standalone: true}" required list="authors">
+      <datalist id="authors">
+        <option *ngFor="let author of this.uploadService.authorsList"
+                [value]="author.name">{{author.name}}</option>
+      </datalist><br><br>
+
+
+      <h3>Tag</h3>
+      <input type="text" id="tag" [(ngModel)]="dataForm.tagName" [ngModelOptions]="{standalone: true}" required list="tags">
+      <datalist id="tags">
+        <option *ngFor="let tag of this.uploadService.tagsList"
+                [value]="tag.name">{{tag.name}}</option>
+      </datalist><br><br>
+
+      <button style="margin-right: 10px"
+              [routerLink]="['/note-gallery/update']"
+              class="btn btn-primary">
+        < Retour
+      </button>
+      <button type="submit" class="btn btn-success">
+        Upload
+      </button>
+    </div>
+  </form>
+</div>
+
