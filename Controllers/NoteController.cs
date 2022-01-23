@@ -4,6 +4,7 @@ using examen_kilian_aiello.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using SQLitePCL;
 
 namespace NotesPosting.Controllers;
 
@@ -20,13 +21,12 @@ public class NoteController : ControllerBase
 
     // GET: api/Note
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Note>>> GetNotes()
+    public List<Note> GetNotes()
     {
-
-        var notes = await _context.Notes
+        var notes = _context.Notes
             .Include(s => s.Tag)
             .Include(s => s.Author)
-            .ToListAsync();
+            .ToList();
 
         return notes;
     }
@@ -232,4 +232,5 @@ public class NoteController : ControllerBase
     {
         return _context.Notes.Any(e => e.NoteId == id);
     }
+    
 }
