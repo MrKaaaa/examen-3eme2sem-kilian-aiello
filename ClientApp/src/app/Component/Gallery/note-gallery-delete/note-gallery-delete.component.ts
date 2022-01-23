@@ -13,26 +13,24 @@ import {NoteGalleryService} from "../../../Service/note-gallery.service";
 export class NoteGalleryDeleteComponent implements OnInit {
 
   constructor(public gallery: NoteGalleryComponent,
-              private galleryService: NoteGalleryService,
+              public galleryService: NoteGalleryService,
               private router: Router) {
   }
 
   ngOnInit(): void {
-    if(this.gallery.notes.length == 0){
+    if(this.galleryService.notes.length == 0){
       this.router.navigate(['/note-gallery']);
     }
   }
 
   deleteNote(note: Note) {
     this.galleryService.deleteNote(note.noteId).subscribe(result =>{
-      console.warn(this.gallery.notes);
-      this.gallery.ngOnInit();
+      console.log(this.galleryService.notes);
 
-      this.galleryService.getNote().subscribe(s =>{
-        if(s.length == 0){
-          this.router.navigate(['/note-gallery']);
-        }
-      });
+      //this.gallery.ngOnInit();
+      window.location.reload();
+      this.galleryService.getNote();
+
     });
   }
 }

@@ -85,6 +85,7 @@ namespace NotesPosting.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTag(int id)
         {
+            Console.WriteLine("Supression Tag");
             var tag = await _context.Tags.FindAsync(id);
             if (tag == null)
             {

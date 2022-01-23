@@ -208,7 +208,7 @@ public class NoteController : ControllerBase
         if (note == null) return NotFound();
 
         _context.Notes.Remove(note);
-        await _context.SaveChangesAsync();
+        _context.SaveChanges();
 
         return NoContent();
     }
@@ -220,7 +220,7 @@ public class NoteController : ControllerBase
         var note = await _context.Notes.ToListAsync();
 
         _context.Notes.RemoveRange(note);
-        await _context.SaveChangesAsync();
+        _context.SaveChanges();
 
         return NoContent();
     }

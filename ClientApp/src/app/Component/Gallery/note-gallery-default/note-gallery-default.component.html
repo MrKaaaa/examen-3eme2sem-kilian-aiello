@@ -11,7 +11,7 @@
 </button>
 
 <button style="margin-bottom: 10px ; margin-right: 10px"
-        [hidden]="this.gallery.notes.length == 0"
+        [hidden]="this.serviceGallery.notes.length == 0"
         [routerLink]="['/note-gallery/delete']"
         class="btn btn-danger">
   Supprimer
@@ -19,14 +19,14 @@
 
 <button style="margin-bottom: 10px ; margin-right: 10px"
         [routerLink]="['/note-gallery/update']"
-        [hidden]="this.gallery.notes.length == 0"
+        [hidden]="this.serviceGallery.notes.length == 0"
         class="btn btn-warning">
   Modifier
 </button>
 
-<div class="card-columns" *ngIf="gallery.notes.length != 0; else emptyNotes;">
+<div class="card-columns" *ngIf="serviceGallery.notes.length != 0; else emptyNotes;">
   <app-note-gallery-default-result
-    *ngFor="let note_result of gallery.notes"
+    *ngFor="let note_result of serviceGallery.notes"
     [note]="note_result">
   </app-note-gallery-default-result>
 </div>

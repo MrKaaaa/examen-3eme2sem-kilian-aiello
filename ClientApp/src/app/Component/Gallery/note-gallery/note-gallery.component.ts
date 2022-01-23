@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {NoteGalleryService} from "../../../Service/note-gallery.service";
 import {Note} from "../../../Interface/note";
+import {Tag} from "../../../Interface/tag";
 
 @Component({
   selector: 'app-note-gallery',
@@ -9,19 +10,10 @@ import {Note} from "../../../Interface/note";
 })
 export class NoteGalleryComponent implements OnInit {
 
-  notes: Note[] = [];
 
-  constructor(private noteGalleryService: NoteGalleryService) {
-  }
+  constructor(private noteGalleryService: NoteGalleryService) {}
 
   ngOnInit(): void {
-    this.notesRefresh();
-  }
-
-  notesRefresh(){
-    this.noteGalleryService.getNote().subscribe(notes => {
-      this.notes = notes;
-      console.log(notes);
-    });
+    this.noteGalleryService.getNote();
   }
 }

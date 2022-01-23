@@ -39,10 +39,6 @@ export class NoteUploadService {
 
   updateNote(id: number, note: any) {
     return this._http.put(this.myAppUrl + "api/Note/" + id, note)
-      .subscribe(data => {
-        console.log(data);
-        this.router.navigate(['/note-gallery/update']);
-      });
   }
 
   deleteNote(id: string) {

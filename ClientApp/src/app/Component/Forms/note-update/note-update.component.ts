@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {NoteUploadService} from "../../../Service/note-upload.service";
 import {Note} from "../../../Interface/note";
 import {Author} from "../../../Interface/author";
 import {Tag} from "../../../Interface/tag";
 import {FormArray, NgForm} from "@angular/forms";
 import {INoteForm} from "../../../Interface/inote-form";
+import {NoteGalleryService} from "../../../Service/note-gallery.service";
 
 @Component({
   selector: 'app-note-update',
@@ -17,7 +18,7 @@ export class NoteUpdateComponent implements OnInit {
   note: any;
   dataForm = {} as INoteForm;
 
-  constructor(public uploadService: NoteUploadService,private route: ActivatedRoute) {
+  constructor(public uploadService: NoteUploadService, private galleryService: NoteGalleryService, private router: Router,private route: ActivatedRoute) {
     this.route.params.subscribe( params => {
       console.log(params.id);
       this.uploadService.getNoteById(params.id).subscribe(data => {
@@ -39,11 +40,21 @@ export class NoteUpdateComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.galleryService.getNote();
+
     this.uploadService.getTagsName();
     this.uploadService.getAuthorsName();
   }
 
   onSubmit(dataForm: any) {
-    this.uploadService.updateNote(this.dataForm.id, dataForm);
+    this.uploadService.updateNote(this.dataForm.id, dataForm).subscribe(data => {
+      console.log(data);
+      this.galleryService.getNote();
+
+      window.location.reload();
+
+      //this.router.navigate(['/note-gallery/update']);
+    });
+
   }
 }
